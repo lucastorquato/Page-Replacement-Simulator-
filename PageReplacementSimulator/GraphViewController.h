@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class PRFifo;
+@class PRFifo, PRSecondChance;
 
 @interface GraphViewController : UIViewController <CPTPlotDataSource>
 
@@ -16,8 +16,10 @@
 
 @property(nonatomic,strong) NSArray *actionsMemoryReference;
 @property(nonatomic,strong) NSArray *intervalFrames;
+@property(assign, nonatomic) NSInteger intervalTimeBitR;
 
 @property(nonatomic,strong) PRFifo *fifo;
+@property(nonatomic,strong) PRSecondChance *secondChance;
 
 - (IBAction)didTouchDoneButton:(id)sender;
 

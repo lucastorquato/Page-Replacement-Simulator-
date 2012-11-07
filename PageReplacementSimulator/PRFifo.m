@@ -13,11 +13,6 @@
 - (void)initialConfig
 {
     self.actionsMemoryReference = [self removeWriteOrReadActionsOnActionsMemory:self.actionsMemoryReference];
-
-    for (NSString *action in self.actionsMemoryReference) {
-        NSLog(@"%@",action);
-    }
-    
 }
 
 - (void)run

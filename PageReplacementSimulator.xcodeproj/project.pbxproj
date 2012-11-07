@@ -27,6 +27,7 @@
 		764C17FC1646FCDB00B0417A /* CPDStockPriceStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 764C17F81646FCDB00B0417A /* CPDStockPriceStore.m */; };
 		764C17FD1646FCDB00B0417A /* CPDConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 764C17FA1646FCDB00B0417A /* CPDConstants.m */; };
 		764C18001647042B00B0417A /* PRFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 764C17FF1647042B00B0417A /* PRFifo.m */; };
+		76558DDE16488CE600FA4D3A /* PRSecondChance.m in Sources */ = {isa = PBXBuildFile; fileRef = 76558DDD16488CE600FA4D3A /* PRSecondChance.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +164,8 @@
 		764C17FB1646FCDB00B0417A /* CPDStockPriceStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPDStockPriceStore.h; sourceTree = "<group>"; };
 		764C17FE1647042B00B0417A /* PRFifo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PRFifo.h; sourceTree = "<group>"; };
 		764C17FF1647042B00B0417A /* PRFifo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PRFifo.m; sourceTree = "<group>"; };
+		76558DDC16488CE600FA4D3A /* PRSecondChance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PRSecondChance.h; sourceTree = "<group>"; };
+		76558DDD16488CE600FA4D3A /* PRSecondChance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PRSecondChance.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,6 +335,8 @@
 		764C177F1646F1C300B0417A /* Second Chance */ = {
 			isa = PBXGroup;
 			children = (
+				76558DDC16488CE600FA4D3A /* PRSecondChance.h */,
+				76558DDD16488CE600FA4D3A /* PRSecondChance.m */,
 			);
 			name = "Second Chance";
 			sourceTree = "<group>";
@@ -590,6 +595,7 @@
 				764C17FC1646FCDB00B0417A /* CPDStockPriceStore.m in Sources */,
 				764C17FD1646FCDB00B0417A /* CPDConstants.m in Sources */,
 				764C18001647042B00B0417A /* PRFifo.m in Sources */,
+				76558DDE16488CE600FA4D3A /* PRSecondChance.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

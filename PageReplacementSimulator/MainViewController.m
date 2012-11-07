@@ -15,6 +15,7 @@
 @end
 
 @implementation MainViewController
+@synthesize intervalTimeBitRTextField;
 @synthesize paginationReferencesTextField, firstIntervalFramesTextField, secondIntervalFramesTextField;
 
 #pragma mark - Life Cycle
@@ -35,8 +36,9 @@
     [self configureAllTextFields];
     
     self.paginationReferencesTextField.text = @"7W 2W 7R 4W 4R 2R 6R 6R 5W 2W 7R 0R 5W 6W 4R 5R 1R 1W 5W";
-    self.firstIntervalFramesTextField.text = @"2";
+    self.firstIntervalFramesTextField.text = @"4";
     self.secondIntervalFramesTextField.text = @"10";
+    self.intervalTimeBitRTextField.text = @"10";
 }
 
 - (void)viewDidUnload
@@ -44,6 +46,7 @@
     [self setPaginationReferencesTextField:nil];
     [self setFirstIntervalFramesTextField:nil];
     [self setSecondIntervalFramesTextField:nil];
+    [self setIntervalTimeBitRTextField:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -125,6 +128,12 @@
     [self.secondIntervalFramesTextField setDelegate:self];
     [self.secondIntervalFramesTextField setReturnKeyType:UIReturnKeyDone];
     [self.secondIntervalFramesTextField addTarget:self
+                                           action:@selector(dismissKeyboard:)
+                                 forControlEvents:UIControlEventEditingDidEndOnExit];
+    
+    [self.intervalTimeBitRTextField setDelegate:self];
+    [self.intervalTimeBitRTextField setReturnKeyType:UIReturnKeyDone];
+    [self.intervalTimeBitRTextField addTarget:self
                                            action:@selector(dismissKeyboard:)
                                  forControlEvents:UIControlEventEditingDidEndOnExit];
 }

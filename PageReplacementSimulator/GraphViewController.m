@@ -12,6 +12,7 @@
 #import "CPDStockPriceStore.h"
 
 #import "PRFifo.h"
+#import "PRSecondChance.h"
 
 @interface GraphViewController ()
 
@@ -42,6 +43,11 @@
     self.fifo.intervalFrames = self.intervalFrames;
     [self.fifo run];
     
+    self.secondChance = [[PRSecondChance alloc] init];
+    self.secondChance.actionsMemoryReference = self.actionsMemoryReference;
+    self.secondChance.intervalFrames = self.intervalFrames;
+    self.secondChance.intervalTimeBitR = self.intervalTimeBitR;
+    [self.secondChance run];
 }
 
 - (void)viewDidUnload
@@ -118,11 +124,11 @@
     aaplPlot.identifier = @"FIFO";
 	CPTColor *aaplColor = [CPTColor redColor];
 	[graph addPlot:aaplPlot toPlotSpace:plotSpace];
-//	CPTScatterPlot *googPlot = [[CPTScatterPlot alloc] init];
-//	googPlot.dataSource = self;
-//	googPlot.identifier = CPDTickerSymbolGOOG;
-//	CPTColor *googColor = [CPTColor greenColor];
-//	[graph addPlot:googPlot toPlotSpace:plotSpace];
+	CPTScatterPlot *googPlot = [[CPTScatterPlot alloc] init];
+	googPlot.dataSource = self;
+	googPlot.identifier = @"SECOND_CHACE";
+	CPTColor *googColor = [CPTColor greenColor];
+	[graph addPlot:googPlot toPlotSpace:plotSpace];
 //	CPTScatterPlot *msftPlot = [[CPTScatterPlot alloc] init];
 //	msftPlot.dataSource = self;
 //	msftPlot.identifier = CPDTickerSymbolMSFT;
@@ -130,7 +136,7 @@
 //	[graph addPlot:msftPlot toPlotSpace:plotSpace];
 	// 3 - Set up plot space
 	//[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:aaplPlot, googPlot, msftPlot, nil]];
-	[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:aaplPlot, nil]];
+	[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:aaplPlot, googPlot,nil]];
     CPTMutablePlotRange *xRange = [plotSpace.xRange mutableCopy];
 	[xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.1f)];
 	plotSpace.xRange = xRange;
@@ -149,17 +155,17 @@
 	aaplSymbol.lineStyle = aaplSymbolLineStyle;
 	aaplSymbol.size = CGSizeMake(6.0f, 6.0f);
 	aaplPlot.plotSymbol = aaplSymbol;
-//	CPTMutableLineStyle *googLineStyle = [googPlot.dataLineStyle mutableCopy];
-//	googLineStyle.lineWidth = 1.0;
-//	googLineStyle.lineColor = googColor;
-//	googPlot.dataLineStyle = googLineStyle;
-//	CPTMutableLineStyle *googSymbolLineStyle = [CPTMutableLineStyle lineStyle];
-//	googSymbolLineStyle.lineColor = googColor;
-//	CPTPlotSymbol *googSymbol = [CPTPlotSymbol starPlotSymbol];
-//	googSymbol.fill = [CPTFill fillWithColor:googColor];
-//	googSymbol.lineStyle = googSymbolLineStyle;
-//	googSymbol.size = CGSizeMake(6.0f, 6.0f);
-//	googPlot.plotSymbol = googSymbol;
+	CPTMutableLineStyle *googLineStyle = [googPlot.dataLineStyle mutableCopy];
+	googLineStyle.lineWidth = 1.0;
+	googLineStyle.lineColor = googColor;
+	googPlot.dataLineStyle = googLineStyle;
+	CPTMutableLineStyle *googSymbolLineStyle = [CPTMutableLineStyle lineStyle];
+	googSymbolLineStyle.lineColor = googColor;
+	CPTPlotSymbol *googSymbol = [CPTPlotSymbol starPlotSymbol];
+	googSymbol.fill = [CPTFill fillWithColor:googColor];
+	googSymbol.lineStyle = googSymbolLineStyle;
+	googSymbol.size = CGSizeMake(6.0f, 6.0f);
+	googPlot.plotSymbol = googSymbol;
 //	CPTMutableLineStyle *msftLineStyle = [msftPlot.dataLineStyle mutableCopy];
 //	msftLineStyle.lineWidth = 2.0;
 //	msftLineStyle.lineColor = msftColor;
@@ -296,6 +302,10 @@
                 return [self.fifo.allHits objectAtIndex:index];
             }
             
+            if ([plot.identifier isEqual:@"SECOND_CHACE"]) {
+                return [self.secondChance.allHits objectAtIndex:index];
+            }
+            
 			break;
 	}
 	return [NSDecimalNumber zero];
@@ -306,7 +316,11 @@
 
 - (NSUInteger)getMaxHitValueWithAllPGAlgorithms
 {
-    return [[self.fifo.allHits valueForKeyPath:@"@max.intValue"] intValue];
+    NSMutableArray *allHitsList = [[NSMutableArray alloc] init];
+    [allHitsList addObject:[self.fifo.allHits valueForKeyPath:@"@max.intValue"]];
+    [allHitsList addObject:[self.secondChance.allHits valueForKeyPath:@"@max.intValue"]];
+    
+    return [[allHitsList valueForKeyPath:@"@max.intValue"] intValue];
 }
 
 @end

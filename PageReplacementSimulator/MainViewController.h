@@ -14,6 +14,7 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *firstIntervalFramesTextField;
 @property (strong, nonatomic) IBOutlet UITextField *secondIntervalFramesTextField;
+@property (strong, nonatomic) IBOutlet UITextField *intervalTimeBitRTextField;
 
 - (IBAction)didTouchRunButton:(id)sender;
 
