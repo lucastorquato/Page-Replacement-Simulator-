@@ -81,6 +81,7 @@
     GraphViewController *graphViewController = [segue destinationViewController];
     graphViewController.actionsMemoryReference = [self getMemoryActionsArrayWithBruteString:self.paginationReferencesTextField.text];
     graphViewController.intervalFrames = [self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text];
+    graphViewController.intervalTimeBitR = [self.intervalTimeBitRTextField.text integerValue];
     
 }
 

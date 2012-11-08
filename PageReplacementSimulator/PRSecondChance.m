@@ -33,30 +33,29 @@
         
         NSMutableArray *loadPages = [[NSMutableArray alloc] initWithCapacity:frame.integerValue]; // LISTA DUPLAMENTE ENCADEADA
         
-        NSMutableArray *bitRList = [[NSMutableArray alloc] initWithCapacity:frame.integerValue];
+        NSMutableArray *bitRList = [[NSMutableArray alloc] initWithCapacity:frame.integerValue];  // LISTA DE BIT R
         
         for (int i = 0 ; i < self.actionsMemoryReference.count ; i++) {
             
             // COLOCAR TODOS OS BIT R EM ZERO QUANDO O NUMERO DE ACOES CHEGAR
-            NSUInteger index = 0;
-            if (self.intervalTimeBitR == i+1) {
-                for (NSNumber *myBitR in bitRList) {
-                    [bitRList replaceObjectAtIndex:index withObject:[NSNumber numberWithInt:0]];
+            NSMutableArray *bitRListCopy = [[NSMutableArray alloc] initWithArray:bitRList];
+            if (self.intervalTimeBitR == i) {
+                NSLog(@"%d - %d",self.intervalTimeBitR, i);
+                for (int x = 0; x < bitRListCopy.count; x++) {
+                    [bitRList replaceObjectAtIndex:x withObject:[NSNumber numberWithInt:0]];
                 }
             }
-            
+        
             NSString *actionMemory = [self.actionsMemoryReference objectAtIndex:i];
-            NSInteger bitR;
-            if (i < bitRList.count) {
-                bitR = [[bitRList objectAtIndex:i] integerValue];
-            }
             
             // *** MAIN BLOCK ***
             if ([loadPages containsObject:actionMemory]) {              // SE NO FRAME EXISTE A PAGINA, INCREMENTE HIT E INCREMENTE O BIT R SE  R == 0
                 hit++;
-                if (bitR == 0) {
-                    bitR++;
+                if ([[bitRList objectAtIndex:[loadPages indexOfObject:actionMemory]]integerValue] == 0) {
+                    NSLog(@"Action:%@ - Idx_Load:%d - BitR:%d", actionMemory ,[loadPages indexOfObject:actionMemory] ,[[bitRList objectAtIndex:[loadPages indexOfObject:actionMemory]] integerValue]);
+                    [bitRList replaceObjectAtIndex:[loadPages indexOfObject:actionMemory] withObject:[NSNumber numberWithInt:1]];
                 }
+                
             }else{                                                       // CASO CONTRÁRIO, ADICIONE A PAGINA NO FRAME E INCREMENTE O BIT R SE R == 0
                 fault++;
                 if (loadPages.count == frame.integerValue) {             // SE O FRAME ESTIVER CHEIO, PASSE NA LISTA E VERIFIQUE SE O BIT R == 1; 
@@ -66,29 +65,42 @@
                     // GET THE INDEX OF FRAME WILL DELETED
                     NSMutableArray *bitRListCopy = [[NSMutableArray alloc] initWithArray:bitRList];
                     NSInteger indexOfFrameWillDeleted;
-                    NSUInteger index = 0;
-                    for (NSNumber *myBitR in bitRListCopy) {
+                    
+                    for (int y = 0; y < bitRListCopy.count; y++) {
+                        NSInteger myBitR = [[bitRListCopy objectAtIndex:y] integerValue];
+                        
                         if (myBitR == 0) {
-                            indexOfFrameWillDeleted = index;
+                            indexOfFrameWillDeleted = 0;
                             break;
                         }else{
-                            [bitRList replaceObjectAtIndex:index withObject:[NSNumber numberWithInt:0]];
+                            [bitRList addObject:[NSNumber numberWithInt:0]];
+                            [bitRList removeObjectAtIndex:0];
+                            
+                            NSString *myAction = [loadPages objectAtIndex:0];
+                            [loadPages addObject:myAction];
+                            [loadPages removeObjectAtIndex:0];
+                            
+                            // FINAL DA ITERACAO - LOAD PAGES E O BIT R
+                            for (int i = 0 ; i < loadPages.count ; i++) {
+                                NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d ",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue]);
+                            }
                         }
-                        index++;
                         
-                        if (index == bitRList.count - 1) {
+                        if (y == bitRList.count - 1) {
                             indexOfFrameWillDeleted = 0;
                         }
+                        
                     }
+                    
                     /**FRAME SNAPSHOT**/ [framePage replaceObjectAtIndex:[framePage indexOfObject:[loadPages objectAtIndex:indexOfFrameWillDeleted]] withObject:actionMemory];
                     [loadPages removeObjectAtIndex:indexOfFrameWillDeleted];
-                    
+                    [bitRList removeObjectAtIndex:indexOfFrameWillDeleted];
                 }else{
                     /**FRAME SNAPSHOT**/ [framePage addObject:actionMemory];
-                }
-                
+                }                
                 [loadPages addObject:actionMemory];
                 [bitRList addObject:[NSNumber numberWithInt:1]];
+
             }
             
             // FINAL DA ITERACAO - LOAD PAGES E O BIT R
@@ -97,10 +109,10 @@
             }
             NSLog(@"Number of hits: %d",hit);
         
-            // FINAL DA ITERACAO - O FRAME SNAPSHOT 
-            for (int i = 0 ; i < framePage.count ; i++) {
-                NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
-            }
+//            // FINAL DA ITERACAO - O FRAME SNAPSHOT 
+//            for (int i = 0 ; i < framePage.count ; i++) {
+//                NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
+//            }
         
         }
         
@@ -109,12 +121,15 @@
         for (int i = 0 ; i < loadPages.count ; i++) {
             NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
         }
-        
         for (int i = 0 ; i < framePage.count ; i++) {
             NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
         }
         
         [self.allHits addObject:[NSString stringWithFormat:@"%d",hit]];
+    }
+    
+    for (NSString *hit in self.allHits) {
+        NSLog(@"%@",hit);
     }
 }
 

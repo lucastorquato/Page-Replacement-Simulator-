@@ -4,16 +4,16 @@
    version = "1.0">
    <FileBreakpoints>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "PageReplacementSimulator/GraphViewController.m"
-         timestampString = "373949585.699091"
+         filePath = "PageReplacementSimulator/PRSecondChance.m"
+         timestampString = "374035149.542322"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "278"
-         endingLineNumber = "278"
-         landmarkName = "-numberOfRecordsForPlot:"
+         startingLineNumber = "116"
+         endingLineNumber = "116"
+         landmarkName = "-run"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -21,37 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "PageReplacementSimulator/PRSecondChance.m"
-         timestampString = "373947313.650727"
+         timestampString = "374035695.796385"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "110"
-         endingLineNumber = "110"
-         landmarkName = "-run"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "PageReplacementSimulator/PRSecondChance.m"
-         timestampString = "373944451.358194"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "45"
-         endingLineNumber = "45"
-         landmarkName = "-run"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "PageReplacementSimulator/PRSecondChance.m"
-         timestampString = "373946519.646482"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "90"
-         endingLineNumber = "90"
+         startingLineNumber = "71"
+         endingLineNumber = "71"
          landmarkName = "-run"
          landmarkType = "5">
       </FileBreakpoint>
