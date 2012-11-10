@@ -79,11 +79,6 @@
                             NSString *myAction = [loadPages objectAtIndex:0];
                             [loadPages addObject:myAction];
                             [loadPages removeObjectAtIndex:0];
-                            
-                            // FINAL DA ITERACAO - LOAD PAGES E O BIT R
-                            for (int i = 0 ; i < loadPages.count ; i++) {
-                                NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d ",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue]);
-                            }
                         }
                         
                         if (y == bitRList.count - 1) {
@@ -109,11 +104,6 @@
             }
             NSLog(@"Number of hits: %d",hit);
         
-//            // FINAL DA ITERACAO - O FRAME SNAPSHOT 
-//            for (int i = 0 ; i < framePage.count ; i++) {
-//                NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
-//            }
-        
         }
         
         // Final Result
@@ -133,53 +123,6 @@
     }
 }
 
-/*
- - (void)runExample
- {
- [self initialConfig];
- 
- int frame = 4;
- int hit = 0;
- int fault = 0;
- NSMutableArray *framePage =[[NSMutableArray alloc] initWithCapacity:frame];  // FRAME SNAPSHOT
- 
- NSMutableArray *loadPages = [[NSMutableArray alloc] initWithCapacity:frame]; // LISTA DUPLAMENTE ENCADEADA
- 
- for (int i = 0 ; i < self.actionsMemoryReference.count ; i++) {
- NSString *actionMemory = [self.actionsMemoryReference objectAtIndex:i];
- 
- // *** MAIN BLOCK ***
- if ([loadPages containsObject:actionMemory]) {  // SE NO FRAME EXISTE A PAGINA, INCREMENTE HIT.
- hit++;
- }else{                                          // CASO CONTRÁRIO, ADICIONE A PAGINA NO FRAME.
- fault++;
- if (loadPages.count == frame) {             // SE O FRAME ESTIVER CHEIO, REMOVA O PRIMEIRO OBJETO.e
- [framePage replaceObjectAtIndex:[framePage indexOfObject:[loadPages objectAtIndex:0]] withObject:actionMemory]; //FRAME SNAPSHOT
- [loadPages removeObjectAtIndex:0];
- }else{
- [framePage addObject:actionMemory]; //FRAME SNAPSHOT
- }
- [loadPages addObject:actionMemory];
- }
- //
- 
- for (int i = 0 ; i < loadPages.count ; i++) {
- NSLog(@">>>LISTA ENCADEADA (%d) %@ ",i, [loadPages objectAtIndex:i]);
- }
- NSLog(@"Number of hits: %d",hit);
- }
- 
- // Final Result
- NSLog(@"Number of hits %d and fault %d",hit,fault);
- for (int i = 0 ; i < loadPages.count ; i++) {
- NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
- }
- 
- for (int i = 0 ; i < framePage.count ; i++) {
- NSLog(@">>>FRAME SNAPSHOW (%d) %@ ",i, [framePage objectAtIndex:i]);
- }
- }
- */
 
 #pragma mark - Utils
 

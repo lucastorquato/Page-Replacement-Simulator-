@@ -13,6 +13,7 @@
 
 #import "PRFifo.h"
 #import "PRSecondChance.h"
+#import "PRMru.h"
 
 @interface GraphViewController ()
 
@@ -48,6 +49,11 @@
     self.secondChance.intervalFrames = self.intervalFrames;
     self.secondChance.intervalTimeBitR = self.intervalTimeBitR;
     [self.secondChance run];
+    
+    self.mru = [[PRMru alloc] init];
+    self.mru.actionsMemoryReference = self.actionsMemoryReference;
+    self.mru.intervalFrames = self.intervalFrames;
+    [self.mru run];
 }
 
 - (void)viewDidUnload
@@ -129,11 +135,11 @@
 	googPlot.identifier = @"SECOND_CHACE";
 	CPTColor *googColor = [CPTColor greenColor];
 	[graph addPlot:googPlot toPlotSpace:plotSpace];
-//	CPTScatterPlot *msftPlot = [[CPTScatterPlot alloc] init];
-//	msftPlot.dataSource = self;
-//	msftPlot.identifier = CPDTickerSymbolMSFT;
-//	CPTColor *msftColor = [CPTColor blueColor];
-//	[graph addPlot:msftPlot toPlotSpace:plotSpace];
+	CPTScatterPlot *msftPlot = [[CPTScatterPlot alloc] init];
+	msftPlot.dataSource = self;
+	msftPlot.identifier = @"MRU";
+	CPTColor *msftColor = [CPTColor blueColor];
+	[graph addPlot:msftPlot toPlotSpace:plotSpace];
 	// 3 - Set up plot space
 	//[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:aaplPlot, googPlot, msftPlot, nil]];
 	[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:aaplPlot, googPlot,nil]];
@@ -166,17 +172,17 @@
 	googSymbol.lineStyle = googSymbolLineStyle;
 	googSymbol.size = CGSizeMake(6.0f, 6.0f);
 	googPlot.plotSymbol = googSymbol;
-//	CPTMutableLineStyle *msftLineStyle = [msftPlot.dataLineStyle mutableCopy];
-//	msftLineStyle.lineWidth = 2.0;
-//	msftLineStyle.lineColor = msftColor;
-//	msftPlot.dataLineStyle = msftLineStyle;
-//	CPTMutableLineStyle *msftSymbolLineStyle = [CPTMutableLineStyle lineStyle];
-//	msftSymbolLineStyle.lineColor = msftColor;
-//	CPTPlotSymbol *msftSymbol = [CPTPlotSymbol diamondPlotSymbol];
-//	msftSymbol.fill = [CPTFill fillWithColor:msftColor];
-//	msftSymbol.lineStyle = msftSymbolLineStyle;
-//	msftSymbol.size = CGSizeMake(6.0f, 6.0f);
-//	msftPlot.plotSymbol = msftSymbol;
+	CPTMutableLineStyle *msftLineStyle = [msftPlot.dataLineStyle mutableCopy];
+	msftLineStyle.lineWidth = 2.0;
+	msftLineStyle.lineColor = msftColor;
+	msftPlot.dataLineStyle = msftLineStyle;
+	CPTMutableLineStyle *msftSymbolLineStyle = [CPTMutableLineStyle lineStyle];
+	msftSymbolLineStyle.lineColor = msftColor;
+	CPTPlotSymbol *msftSymbol = [CPTPlotSymbol diamondPlotSymbol];
+	msftSymbol.fill = [CPTFill fillWithColor:msftColor];
+	msftSymbol.lineStyle = msftSymbolLineStyle;
+	msftSymbol.size = CGSizeMake(6.0f, 6.0f);
+	msftPlot.plotSymbol = msftSymbol;
 }
 
 -(void)configureAxes {
@@ -299,12 +305,19 @@
 //			}
             
             if ([plot.identifier isEqual:@"FIFO"]) {
+            
                 return [self.fifo.allHits objectAtIndex:index];
+            
+            }else if ([plot.identifier isEqual:@"SECOND_CHACE"]) {
+                
+                return [self.secondChance.allHits objectAtIndex:index];
+            
+            }else if ([plot.identifier isEqual:@"MRU"]) {
+                
+                return [self.mru.allHits objectAtIndex:index];
+                
             }
             
-            if ([plot.identifier isEqual:@"SECOND_CHACE"]) {
-                return [self.secondChance.allHits objectAtIndex:index];
-            }
             
 			break;
 	}
@@ -319,6 +332,7 @@
     NSMutableArray *allHitsList = [[NSMutableArray alloc] init];
     [allHitsList addObject:[self.fifo.allHits valueForKeyPath:@"@max.intValue"]];
     [allHitsList addObject:[self.secondChance.allHits valueForKeyPath:@"@max.intValue"]];
+    [allHitsList addObject:[self.mru.allHits valueForKeyPath:@"@max.intValue"]];
     
     return [[allHitsList valueForKeyPath:@"@max.intValue"] intValue];
 }

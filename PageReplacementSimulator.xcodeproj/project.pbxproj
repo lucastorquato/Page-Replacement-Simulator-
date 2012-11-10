@@ -28,6 +28,7 @@
 		764C17FD1646FCDB00B0417A /* CPDConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 764C17FA1646FCDB00B0417A /* CPDConstants.m */; };
 		764C18001647042B00B0417A /* PRFifo.m in Sources */ = {isa = PBXBuildFile; fileRef = 764C17FF1647042B00B0417A /* PRFifo.m */; };
 		76558DDE16488CE600FA4D3A /* PRSecondChance.m in Sources */ = {isa = PBXBuildFile; fileRef = 76558DDD16488CE600FA4D3A /* PRSecondChance.m */; };
+		769E22E7164E8E69005F97AB /* PRMru.m in Sources */ = {isa = PBXBuildFile; fileRef = 769E22E6164E8E69005F97AB /* PRMru.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,6 +167,8 @@
 		764C17FF1647042B00B0417A /* PRFifo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PRFifo.m; sourceTree = "<group>"; };
 		76558DDC16488CE600FA4D3A /* PRSecondChance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PRSecondChance.h; sourceTree = "<group>"; };
 		76558DDD16488CE600FA4D3A /* PRSecondChance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PRSecondChance.m; sourceTree = "<group>"; };
+		769E22E5164E8E69005F97AB /* PRMru.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PRMru.h; sourceTree = "<group>"; };
+		769E22E6164E8E69005F97AB /* PRMru.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PRMru.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -312,8 +315,8 @@
 			children = (
 				764C17801646F1C600B0417A /* FIFO */,
 				764C177F1646F1C300B0417A /* Second Chance */,
-				764C177E1646F1C100B0417A /* NUR */,
 				764C177D1646F1BF00B0417A /* MRU */,
+				764C177E1646F1C100B0417A /* NUR */,
 			);
 			name = "Page Replacement Algorithms";
 			sourceTree = "<group>";
@@ -321,6 +324,8 @@
 		764C177D1646F1BF00B0417A /* MRU */ = {
 			isa = PBXGroup;
 			children = (
+				769E22E5164E8E69005F97AB /* PRMru.h */,
+				769E22E6164E8E69005F97AB /* PRMru.m */,
 			);
 			name = MRU;
 			sourceTree = "<group>";
@@ -596,6 +601,7 @@
 				764C17FD1646FCDB00B0417A /* CPDConstants.m in Sources */,
 				764C18001647042B00B0417A /* PRFifo.m in Sources */,
 				76558DDE16488CE600FA4D3A /* PRSecondChance.m in Sources */,
+				769E22E7164E8E69005F97AB /* PRMru.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

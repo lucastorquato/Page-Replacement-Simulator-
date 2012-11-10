@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class PRFifo, PRSecondChance;
+@class PRFifo, PRSecondChance, PRMru;
 
 @interface GraphViewController : UIViewController <CPTPlotDataSource>
 
@@ -20,6 +20,7 @@
 
 @property(nonatomic,strong) PRFifo *fifo;
 @property(nonatomic,strong) PRSecondChance *secondChance;
+@property(nonatomic,strong) PRMru *mru;
 
 - (IBAction)didTouchDoneButton:(id)sender;
 

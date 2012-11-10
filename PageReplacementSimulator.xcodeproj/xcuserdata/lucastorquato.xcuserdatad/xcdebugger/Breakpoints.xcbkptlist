@@ -7,25 +7,12 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "PageReplacementSimulator/PRSecondChance.m"
-         timestampString = "374035149.542322"
+         filePath = "PageReplacementSimulator/PRMru.m"
+         timestampString = "374248070.100662"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "116"
-         endingLineNumber = "116"
-         landmarkName = "-run"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "PageReplacementSimulator/PRSecondChance.m"
-         timestampString = "374035695.796385"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "71"
-         endingLineNumber = "71"
+         startingLineNumber = "66"
+         endingLineNumber = "66"
          landmarkName = "-run"
          landmarkType = "5">
       </FileBreakpoint>
