@@ -14,6 +14,11 @@
 #import "PRFifo.h"
 #import "PRSecondChance.h"
 #import "PRMru.h"
+#import "PRNur.h"
+
+#import "ResultTableViewController.h"
+#import "MainViewController.h"
+
 
 @interface GraphViewController ()
 
@@ -21,10 +26,13 @@
 
 @implementation GraphViewController
 
-#define MAJOR_INCREMENT_Y 2
+#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+
+#define MAJOR_INCREMENT_Y 1
 #define MINOR_INCREMENT_Y 1
 
 #pragma mark - Life Cycle
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -38,7 +46,40 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+    
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
+    if (IS_IPAD) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
+        MainViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"MainViewID"];
+        mainViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+        mainViewController.delegate = self;
+        [self.navigationController presentModalViewController:mainViewController animated:YES];
+    }else{
+        [self runAllPageRepacementAlgo];
+    }
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
+}
+
+#pragma mark - Run Alg
+
+- (void)runAllPageRepacementAlgo
+{
     self.fifo = [[PRFifo alloc] init];
     self.fifo.actionsMemoryReference = self.actionsMemoryReference;
     self.fifo.intervalFrames = self.intervalFrames;
@@ -54,17 +95,25 @@
     self.mru.actionsMemoryReference = self.actionsMemoryReference;
     self.mru.intervalFrames = self.intervalFrames;
     [self.mru run];
+    
+    self.nur = [[PRNur alloc] init];
+    self.nur.actionsMemoryReference = self.actionsMemoryReference;
+    self.nur.intervalFrames = self.intervalFrames;
+    self.nur.intervalTimeBitR = self.intervalTimeBitR;
+    [self.nur run];
+    
+    [self initPlot];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-}
+#pragma mark - Main View Delegate
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (void)inputProblemWithActions:(NSArray *)actionsMemory intervalFrames:(NSArray *)intervalFrames andIntervalTimeBitR:(NSInteger)intervalTimeR
 {
-    return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
+    self.actionsMemoryReference = actionsMemory;
+    self.intervalFrames = intervalFrames;
+    self.intervalTimeBitR = intervalTimeR;
+    
+    [self runAllPageRepacementAlgo];
 }
 
 #pragma mark - Actions
@@ -74,11 +123,54 @@
     [self dismissModalViewControllerAnimated:YES];
 }
 
+- (IBAction)didTouchTableButton:(id)sender
+{
+    if (IS_IPAD) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
+        ResultTableViewController *resultTableViewController = [storyboard instantiateViewControllerWithIdentifier:@"ResultTable"];
+        resultTableViewController.intervalFrames = self.intervalFrames;
+        resultTableViewController.fifo = self.fifo;
+        resultTableViewController.secondChance = self.secondChance;
+        resultTableViewController.mru = self.mru;
+        resultTableViewController.nur = self.nur;
+        
+        [self.navigationController presentModalViewController:resultTableViewController animated:YES];
+    }
+}
+
+- (IBAction)didTouchNewButton:(id)sender
+{
+    if (IS_IPAD) {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
+        MainViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"MainViewID"];
+        mainViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+        mainViewController.delegate = self;
+        [self.navigationController presentModalViewController:mainViewController animated:YES];
+    
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"ResultTableSegue"]) {
+        ResultTableViewController *resultTableViewController = [segue destinationViewController];
+        resultTableViewController.intervalFrames = self.intervalFrames;
+        resultTableViewController.fifo = self.fifo;
+        resultTableViewController.secondChance = self.secondChance;
+        resultTableViewController.mru = self.mru;
+        resultTableViewController.nur = self.nur;
+    }else if ([segue.identifier isEqualToString:@"MainViewSegue"]){
+        MainViewController *mainViewController = [segue destinationViewController];
+        mainViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+        mainViewController.delegate = self;
+    }
+
+}
 
 #pragma mark - UIViewController lifecycle methods
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self initPlot];
+    //[self initPlot];
 }
 
 #pragma mark - Chart behavior
@@ -98,19 +190,19 @@
 -(void)configureGraph {
 	// 1 - Create the graph
 	CPTGraph *graph = [[CPTXYGraph alloc] initWithFrame:self.hostView.bounds];
-	[graph applyTheme:[CPTTheme themeNamed:kCPTDarkGradientTheme]];
+	[graph applyTheme:[CPTTheme themeNamed:kCPTStocksTheme]];
 	self.hostView.hostedGraph = graph;
 	// 2 - Set graph title
 	//NSString *title = @"Portfolio Prices: April 2012";
 	//graph.title = title;
 	// 3 - Create and set text style
-	CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
-	titleStyle.color = [CPTColor whiteColor];
-	titleStyle.fontName = @"Helvetica-Bold";
-	titleStyle.fontSize = 16.0f;
-	graph.titleTextStyle = titleStyle;
-	graph.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
-	graph.titleDisplacement = CGPointMake(0.0f, 10.0f);
+//	CPTMutableTextStyle *titleStyle = [CPTMutableTextStyle textStyle];
+//	titleStyle.color = [CPTColor whiteColor];
+//	titleStyle.fontName = @"Helvetica-Bold";
+//	titleStyle.fontSize = 16.0f;
+//	graph.titleTextStyle = titleStyle;
+//	graph.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
+//	graph.titleDisplacement = CGPointMake(0.0f, 10.0f);
 	// 4 - Set padding for plot area
 	[graph.plotAreaFrame setPaddingLeft:30.0f];
 	[graph.plotAreaFrame setPaddingBottom:30.0f];
@@ -123,57 +215,66 @@
 	// 1 - Get graph and plot space
 	CPTGraph *graph = self.hostView.hostedGraph;
 	CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) graph.defaultPlotSpace;
-	// 2 - Create the three plots
-	CPTScatterPlot *aaplPlot = [[CPTScatterPlot alloc] init];
-	aaplPlot.dataSource = self;
+	
+    // 2 - Create the three plots
+	CPTScatterPlot *fifoPlot = [[CPTScatterPlot alloc] init];
+	fifoPlot.dataSource = self;
 	//aaplPlot.identifier = CPDTickerSymbolAAPL;
-    aaplPlot.identifier = @"FIFO";
-	CPTColor *aaplColor = [CPTColor redColor];
-	[graph addPlot:aaplPlot toPlotSpace:plotSpace];
-	CPTScatterPlot *googPlot = [[CPTScatterPlot alloc] init];
-	googPlot.dataSource = self;
-	googPlot.identifier = @"SECOND_CHACE";
-	CPTColor *googColor = [CPTColor greenColor];
-	[graph addPlot:googPlot toPlotSpace:plotSpace];
+    fifoPlot.identifier = @"FIFO";
+	CPTColor *fifoColor = [CPTColor blueColor];
+	[graph addPlot:fifoPlot toPlotSpace:plotSpace];
+	CPTScatterPlot *secondChancePlot = [[CPTScatterPlot alloc] init];
+	secondChancePlot.dataSource = self;
+	secondChancePlot.identifier = @"SECOND_CHANCE";
+	CPTColor *secondChanceColor = [CPTColor purpleColor];
+	[graph addPlot:secondChancePlot toPlotSpace:plotSpace];
 	CPTScatterPlot *msftPlot = [[CPTScatterPlot alloc] init];
 	msftPlot.dataSource = self;
 	msftPlot.identifier = @"MRU";
-	CPTColor *msftColor = [CPTColor blueColor];
+	CPTColor *msftColor = [CPTColor redColor];
 	[graph addPlot:msftPlot toPlotSpace:plotSpace];
+    CPTScatterPlot *nurPlot = [[CPTScatterPlot alloc] init];
+	nurPlot.dataSource = self;
+	nurPlot.identifier = @"NUR";
+	CPTColor *nurColor = [CPTColor yellowColor];
+	[graph addPlot:nurPlot toPlotSpace:plotSpace];
+    
+    
 	// 3 - Set up plot space
 	//[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:aaplPlot, googPlot, msftPlot, nil]];
-	[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:aaplPlot, googPlot,nil]];
+	[plotSpace scaleToFitPlots:[NSArray arrayWithObjects:fifoPlot, secondChancePlot, msftPlot, nurPlot,nil]];
     CPTMutablePlotRange *xRange = [plotSpace.xRange mutableCopy];
-	[xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.1f)];
+	[xRange expandRangeByFactor:CPTDecimalFromCGFloat(1.1f)]; //1.1f
 	plotSpace.xRange = xRange;
 	CPTMutablePlotRange *yRange = [plotSpace.yRange mutableCopy];
-	[yRange expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)];
+	[yRange expandRangeByFactor:CPTDecimalFromCGFloat(1.2f)]; //1.2f
 	plotSpace.yRange = yRange;
-	// 4 - Create styles and symbols
-	CPTMutableLineStyle *aaplLineStyle = [aaplPlot.dataLineStyle mutableCopy];
-	aaplLineStyle.lineWidth = 2.5;
-	aaplLineStyle.lineColor = aaplColor;
-	aaplPlot.dataLineStyle = aaplLineStyle;
-	CPTMutableLineStyle *aaplSymbolLineStyle = [CPTMutableLineStyle lineStyle];
-	aaplSymbolLineStyle.lineColor = aaplColor;
-	CPTPlotSymbol *aaplSymbol = [CPTPlotSymbol ellipsePlotSymbol];
-	aaplSymbol.fill = [CPTFill fillWithColor:aaplColor];
-	aaplSymbol.lineStyle = aaplSymbolLineStyle;
-	aaplSymbol.size = CGSizeMake(6.0f, 6.0f);
-	aaplPlot.plotSymbol = aaplSymbol;
-	CPTMutableLineStyle *googLineStyle = [googPlot.dataLineStyle mutableCopy];
-	googLineStyle.lineWidth = 1.0;
-	googLineStyle.lineColor = googColor;
-	googPlot.dataLineStyle = googLineStyle;
-	CPTMutableLineStyle *googSymbolLineStyle = [CPTMutableLineStyle lineStyle];
-	googSymbolLineStyle.lineColor = googColor;
-	CPTPlotSymbol *googSymbol = [CPTPlotSymbol starPlotSymbol];
-	googSymbol.fill = [CPTFill fillWithColor:googColor];
-	googSymbol.lineStyle = googSymbolLineStyle;
-	googSymbol.size = CGSizeMake(6.0f, 6.0f);
-	googPlot.plotSymbol = googSymbol;
+	
+    // 4 - Create styles and symbols
+	CPTMutableLineStyle *fifoLineStyle = [fifoPlot.dataLineStyle mutableCopy];
+	fifoLineStyle.lineWidth = 3.0;
+	fifoLineStyle.lineColor = fifoColor;
+	fifoPlot.dataLineStyle = fifoLineStyle;
+	CPTMutableLineStyle *fifoSymbolLineStyle = [CPTMutableLineStyle lineStyle];
+	fifoSymbolLineStyle.lineColor = fifoColor;
+	CPTPlotSymbol *fifoSymbol = [CPTPlotSymbol ellipsePlotSymbol];
+	fifoSymbol.fill = [CPTFill fillWithColor:fifoColor];
+	fifoSymbol.lineStyle = fifoSymbolLineStyle;
+	fifoSymbol.size = CGSizeMake(6.0f, 6.0f);
+	fifoPlot.plotSymbol = fifoSymbol;
+	CPTMutableLineStyle *secondChanceLineStyle = [secondChancePlot.dataLineStyle mutableCopy];
+	secondChanceLineStyle.lineWidth = 3.0;
+	secondChanceLineStyle.lineColor = secondChanceColor;
+	secondChancePlot.dataLineStyle = secondChanceLineStyle;
+	CPTMutableLineStyle *secondChanceSymbolLineStyle = [CPTMutableLineStyle lineStyle];
+	secondChanceSymbolLineStyle.lineColor = secondChanceColor;
+	CPTPlotSymbol *secondChanceSymbol = [CPTPlotSymbol starPlotSymbol];
+	secondChanceSymbol.fill = [CPTFill fillWithColor:secondChanceColor];
+	secondChanceSymbol.lineStyle = secondChanceSymbolLineStyle;
+	secondChanceSymbol.size = CGSizeMake(6.0f, 6.0f);
+	secondChancePlot.plotSymbol = secondChanceSymbol;
 	CPTMutableLineStyle *msftLineStyle = [msftPlot.dataLineStyle mutableCopy];
-	msftLineStyle.lineWidth = 2.0;
+	msftLineStyle.lineWidth = 3.0;
 	msftLineStyle.lineColor = msftColor;
 	msftPlot.dataLineStyle = msftLineStyle;
 	CPTMutableLineStyle *msftSymbolLineStyle = [CPTMutableLineStyle lineStyle];
@@ -183,6 +284,19 @@
 	msftSymbol.lineStyle = msftSymbolLineStyle;
 	msftSymbol.size = CGSizeMake(6.0f, 6.0f);
 	msftPlot.plotSymbol = msftSymbol;
+    CPTMutableLineStyle *nurLineStyle = [nurPlot.dataLineStyle mutableCopy];
+	nurLineStyle.lineWidth = 3.0;
+	nurLineStyle.lineColor = nurColor;
+    nurLineStyle.lineJoin =  kCGLineCapRound;
+    nurLineStyle.lineCap = kCGLineCapButt;
+	nurPlot.dataLineStyle = nurLineStyle;
+	CPTMutableLineStyle *nurSymbolLineStyle = [CPTMutableLineStyle lineStyle];
+	nurSymbolLineStyle.lineColor = nurColor;
+	CPTPlotSymbol *nurSymbol = [CPTPlotSymbol diamondPlotSymbol];
+	nurSymbol.fill = [CPTFill fillWithColor:nurColor];
+	nurSymbol.lineStyle = nurSymbolLineStyle;
+	nurSymbol.size = CGSizeMake(6.0f, 6.0f);
+	nurPlot.plotSymbol = nurSymbol;
 }
 
 -(void)configureAxes {
@@ -288,6 +402,7 @@
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
 	//NSInteger valueCount = [[[CPDStockPriceStore sharedInstance] datesInMonth] count];
 	NSInteger valueCount = self.intervalFrames.count;
+    
     switch (fieldEnum) {
 		case CPTScatterPlotFieldX:
 			if (index < valueCount) {
@@ -296,25 +411,22 @@
 			break;
 			
 		case CPTScatterPlotFieldY:
-//			if ([plot.identifier isEqual:CPDTickerSymbolAAPL] == YES) {
-//				return [[[CPDStockPriceStore sharedInstance] monthlyPrices:CPDTickerSymbolAAPL] objectAtIndex:index];
-//			} else if ([plot.identifier isEqual:CPDTickerSymbolGOOG] == YES) {
-//				return [[[CPDStockPriceStore sharedInstance] monthlyPrices:CPDTickerSymbolGOOG] objectAtIndex:index];
-//			} else if ([plot.identifier isEqual:CPDTickerSymbolMSFT] == YES) {
-//				return [[[CPDStockPriceStore sharedInstance] monthlyPrices:CPDTickerSymbolMSFT] objectAtIndex:index];
-//			}
             
             if ([plot.identifier isEqual:@"FIFO"]) {
             
                 return [self.fifo.allHits objectAtIndex:index];
             
-            }else if ([plot.identifier isEqual:@"SECOND_CHACE"]) {
+            }else if ([plot.identifier isEqual:@"SECOND_CHANCE"]) {
                 
                 return [self.secondChance.allHits objectAtIndex:index];
             
             }else if ([plot.identifier isEqual:@"MRU"]) {
                 
                 return [self.mru.allHits objectAtIndex:index];
+                
+            }else if ([plot.identifier isEqual:@"NUR"]){
+            
+                return [self.nur.allHits objectAtIndex:index];
                 
             }
             
@@ -333,6 +445,7 @@
     [allHitsList addObject:[self.fifo.allHits valueForKeyPath:@"@max.intValue"]];
     [allHitsList addObject:[self.secondChance.allHits valueForKeyPath:@"@max.intValue"]];
     [allHitsList addObject:[self.mru.allHits valueForKeyPath:@"@max.intValue"]];
+    [allHitsList addObject:[self.nur.allHits valueForKeyPath:@"@max.intValue"]];
     
     return [[allHitsList valueForKeyPath:@"@max.intValue"] intValue];
 }

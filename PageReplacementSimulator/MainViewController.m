@@ -16,7 +16,9 @@
 
 @implementation MainViewController
 @synthesize intervalTimeBitRTextField;
-@synthesize paginationReferencesTextField, firstIntervalFramesTextField, secondIntervalFramesTextField;
+@synthesize paginationReferencesTextField, firstIntervalFramesTextField, secondIntervalFramesTextField, delegate;
+
+#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
 #pragma mark - Life Cycle
 
@@ -56,6 +58,14 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+#pragma mark - Delegate 
+
+- (void)inputProblemWithActionsDelegete
+{
+    [self.delegate inputProblemWithActions:[self getMemoryActionsArrayWithBruteString:self.paginationReferencesTextField.text] intervalFrames:[self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text] andIntervalTimeBitR:[self.intervalTimeBitRTextField.text integerValue]];
+    
+    [self dismissModalViewControllerAnimated:YES];
+}
 
 #pragma mark - Actions
 
@@ -63,7 +73,11 @@
 {
     if (self.paginationReferencesTextField.text.length > 0 && self.firstIntervalFramesTextField.text.length > 0 && self.secondIntervalFramesTextField.text.length > 0) {
         if ([self.firstIntervalFramesTextField.text integerValue] < [self.secondIntervalFramesTextField.text integerValue]) {
-            [self performSegueWithIdentifier:@"GraphSegue" sender:nil];
+            if (IS_IPAD) {
+                [self inputProblemWithActionsDelegete];
+            }else{
+                [self performSegueWithIdentifier:@"GraphSegue" sender:nil];
+            }
         }else{
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:@"O Intervalo está errado." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
@@ -78,11 +92,12 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    GraphViewController *graphViewController = [segue destinationViewController];
-    graphViewController.actionsMemoryReference = [self getMemoryActionsArrayWithBruteString:self.paginationReferencesTextField.text];
-    graphViewController.intervalFrames = [self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text];
-    graphViewController.intervalTimeBitR = [self.intervalTimeBitRTextField.text integerValue];
-    
+    if ([segue.identifier isEqualToString:@"GraphSegue"]) {   
+        GraphViewController *graphViewController = [segue destinationViewController];
+        graphViewController.actionsMemoryReference = [self getMemoryActionsArrayWithBruteString:self.paginationReferencesTextField.text];
+        graphViewController.intervalFrames = [self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text];
+        graphViewController.intervalTimeBitR = [self.intervalTimeBitRTextField.text integerValue];
+    }
 }
 
 #pragma mark - Utils

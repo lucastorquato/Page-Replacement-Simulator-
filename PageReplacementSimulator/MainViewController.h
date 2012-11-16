@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol MainViewDelegate <NSObject>
+
+- (void)inputProblemWithActions:(NSArray*)actionsMemory intervalFrames:(NSArray*)intervalFrames andIntervalTimeBitR:(NSInteger)intervalTimeR ;
+
+@end
+
+
 @interface MainViewController : UIViewController <UITextFieldDelegate>
 
 @property (strong, nonatomic) IBOutlet UITextField *paginationReferencesTextField;
@@ -16,6 +23,10 @@
 @property (strong, nonatomic) IBOutlet UITextField *secondIntervalFramesTextField;
 @property (strong, nonatomic) IBOutlet UITextField *intervalTimeBitRTextField;
 
+@property (strong, nonatomic) id<MainViewDelegate> delegate;
+
 - (IBAction)didTouchRunButton:(id)sender;
+
+- (void)inputProblemWithActions:(NSArray*)actionsMemory intervalFrames:(NSArray*)intervalFrames andIntervalTimeBitR:(NSInteger)intervalTimeR ;
 
 @end
