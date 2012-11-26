@@ -27,8 +27,5 @@
 @property(nonatomic,strong) id<MainViewDelegate> delegate;
 
 - (IBAction)didTouchDoneButton:(id)sender;
-- (IBAction)didTouchTableButton:(id)sender;
-- (IBAction)didTouchNewButton:(id)sender;
-
 
 @end

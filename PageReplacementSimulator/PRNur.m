@@ -35,15 +35,24 @@
             // COLOCAR TODOS OS BIT R EM ZERO QUANDO O NUMERO DE ACOES CHEGAR
             
             NSMutableArray *bitRListCopy = [[NSMutableArray alloc] initWithArray:bitRList];
-            if (self.intervalTimeBitR == i) {
+            if (i%self.intervalTimeBitR == 0) {
                 for (int x = 0; x < bitRListCopy.count; x++) {
                     [bitRList replaceObjectAtIndex:x withObject:[NSNumber numberWithInt:0]];
                 }
             }
             
+            NSString *actionMemory = [self.actionsMemoryReference objectAtIndex:i];
+            //if (actionMemory.length == 2) {
+                actionMemory = [[self.actionsMemoryReference objectAtIndex:i] substringToIndex:actionMemory.length - 1];
+            //}else{
+            //    actionMemory = [[self.actionsMemoryReference objectAtIndex:i] substringToIndex:2];
+            //}
+            //NSString *actionMemory = [[self.actionsMemoryReference objectAtIndex:i] substringToIndex:1];
             
-            NSString *actionMemory = [[self.actionsMemoryReference objectAtIndex:i] substringToIndex:1];
-            NSString *actionRorW = [[self.actionsMemoryReference objectAtIndex:i] substringFromIndex:1];
+            
+            NSString *actionRorW = [[self.actionsMemoryReference objectAtIndex:i] substringFromIndex:actionMemory.length];
+            
+            //NSLog(@"%@ %@",actionMemory, actionRorW);
             
             // *** MAIN BLOCK ***
             if ([loadPages containsObject:actionMemory]) {   // SE NO FRAME EXISTE A PAGINA, INCREMENTE HIT; INCREMENTE O BIT R SE R == 0 ; INCREMENTE M SE A ACAO FOR ESCRITA E SE M ==0
@@ -74,11 +83,11 @@
                     indexOfFrameWillDeleted = [classesOfFrames indexOfObject:[classesOfFrames valueForKeyPath:@"@min.self"]];
     
                     
-                    NSLog(@"Number of hits: %d",hit);
-                    for (int i = 0 ; i < loadPages.count ; i++) {
-                        NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d M=%d",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue],[[bitMList objectAtIndex:i]integerValue]);
-                    }
-                    NSLog(@"DELETE: index %d - object %@",indexOfFrameWillDeleted, [loadPages objectAtIndex:indexOfFrameWillDeleted]);
+//                    NSLog(@"Number of hits: %d",hit);
+//                    for (int i = 0 ; i < loadPages.count ; i++) {
+//                        NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d M=%d",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue],[[bitMList objectAtIndex:i]integerValue]);
+//                    }
+                    //NSLog(@"DELETE: index %d - object %@",indexOfFrameWillDeleted, [loadPages objectAtIndex:indexOfFrameWillDeleted]);
                     
                     
                     /**FRAME SNAPSHOT**/ [framePage replaceObjectAtIndex:[framePage indexOfObject:[loadPages objectAtIndex:indexOfFrameWillDeleted]] withObject:actionMemory];
@@ -98,21 +107,25 @@
             }
             
             // FINAL DA ITERACAO - LOAD PAGES E O BIT R
-            for (int i = 0 ; i < loadPages.count ; i++) {
-                NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d M=%d",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue],[[bitMList objectAtIndex:i]integerValue]);
-            }
-            NSLog(@"Number of hits: %d",hit);
+//            for (int i = 0 ; i < loadPages.count ; i++) {
+//                NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d M=%d",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue],[[bitMList objectAtIndex:i]integerValue]);
+//            }
+//            NSLog(@"Number of hits: %d",hit);
+//            
+//            for (int i = 0; i < framePage.count; i++) {
+//                NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
+//            }
             
         }
         
-        // Final Result
-        NSLog(@"Number of hits %d and fault %d",hit,fault);
-        for (int i = 0 ; i < loadPages.count ; i++) {
-            NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
-        }
-        for (int i = 0 ; i < framePage.count ; i++) {
-            NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
-        }
+//        // Final Result
+//        NSLog(@"Number of hits %d and fault %d",hit,fault);
+//        for (int i = 0 ; i < loadPages.count ; i++) {
+//            NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
+//        }
+//        for (int i = 0 ; i < framePage.count ; i++) {
+//            NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
+//        }
         
         [self.allHits addObject:[NSString stringWithFormat:@"%d",hit]];
     }

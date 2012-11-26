@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		760185381655F0D3009DB911 /* legenda@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 760185361655F0D3009DB911 /* legenda@2x.png */; };
+		760185391655F0D3009DB911 /* legenda.png in Resources */ = {isa = PBXBuildFile; fileRef = 760185371655F0D3009DB911 /* legenda.png */; };
+		76169C9F165982230048ECE2 /* DejalActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76169C9E165982230048ECE2 /* DejalActivityView.m */; };
 		764C17371646E5EB00B0417A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 764C17361646E5EB00B0417A /* UIKit.framework */; };
 		764C17391646E5EB00B0417A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 764C17381646E5EB00B0417A /* Foundation.framework */; };
 		764C173B1646E5EB00B0417A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 764C173A1646E5EB00B0417A /* CoreGraphics.framework */; };
@@ -30,6 +33,7 @@
 		76558DDE16488CE600FA4D3A /* PRSecondChance.m in Sources */ = {isa = PBXBuildFile; fileRef = 76558DDD16488CE600FA4D3A /* PRSecondChance.m */; };
 		769E22E7164E8E69005F97AB /* PRMru.m in Sources */ = {isa = PBXBuildFile; fileRef = 769E22E6164E8E69005F97AB /* PRMru.m */; };
 		769E22EA164E955B005F97AB /* PRNur.m in Sources */ = {isa = PBXBuildFile; fileRef = 769E22E9164E955B005F97AB /* PRNur.m */; };
+		76B27366165C2912005CC7D9 /* MemoryReferences.txt in Resources */ = {isa = PBXBuildFile; fileRef = 76B27365165C2912005CC7D9 /* MemoryReferences.txt */; };
 		76ED2F0E16556B2C00621981 /* ResultTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED2F0D16556B2C00621981 /* ResultTableViewController.m */; };
 		76ED2F1216556B5C00621981 /* HeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED2F1116556B5C00621981 /* HeaderViewController.m */; };
 		76ED2F1616556C1400621981 /* ResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 76ED2F1516556C1400621981 /* ResultCell.m */; };
@@ -60,6 +64,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		760185361655F0D3009DB911 /* legenda@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "legenda@2x.png"; sourceTree = "<group>"; };
+		760185371655F0D3009DB911 /* legenda.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = legenda.png; sourceTree = "<group>"; };
+		76169C9D165982230048ECE2 /* DejalActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DejalActivityView.h; sourceTree = "<group>"; };
+		76169C9E165982230048ECE2 /* DejalActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DejalActivityView.m; sourceTree = "<group>"; };
 		764C17321646E5EA00B0417A /* PageReplacementSimulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PageReplacementSimulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		764C17361646E5EB00B0417A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		764C17381646E5EB00B0417A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -175,6 +183,7 @@
 		769E22E6164E8E69005F97AB /* PRMru.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PRMru.m; sourceTree = "<group>"; };
 		769E22E8164E955B005F97AB /* PRNur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PRNur.h; sourceTree = "<group>"; };
 		769E22E9164E955B005F97AB /* PRNur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PRNur.m; sourceTree = "<group>"; };
+		76B27365165C2912005CC7D9 /* MemoryReferences.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MemoryReferences.txt; sourceTree = "<group>"; };
 		76ED2F0C16556B2C00621981 /* ResultTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultTableViewController.h; sourceTree = "<group>"; };
 		76ED2F0D16556B2C00621981 /* ResultTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultTableViewController.m; sourceTree = "<group>"; };
 		76ED2F1016556B5C00621981 /* HeaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderViewController.h; sourceTree = "<group>"; };
@@ -245,6 +254,7 @@
 		764C173C1646E5EB00B0417A /* PageReplacementSimulator */ = {
 			isa = PBXGroup;
 			children = (
+				76B27365165C2912005CC7D9 /* MemoryReferences.txt */,
 				764C176E1646E5FD00B0417A /* AppDelegate & Storyboard */,
 				764C17741646EDFE00B0417A /* Controllers */,
 				764C177C1646F19200B0417A /* Page Replacement Algorithms */,
@@ -256,6 +266,10 @@
 		764C173D1646E5EB00B0417A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				76169C9D165982230048ECE2 /* DejalActivityView.h */,
+				76169C9E165982230048ECE2 /* DejalActivityView.m */,
+				760185361655F0D3009DB911 /* legenda@2x.png */,
+				760185371655F0D3009DB911 /* legenda.png */,
 				764C173E1646E5EB00B0417A /* PageReplacementSimulator-Info.plist */,
 				764C173F1646E5EB00B0417A /* InfoPlist.strings */,
 				764C17421646E5EB00B0417A /* main.m */,
@@ -603,6 +617,9 @@
 				764C17411646E5EB00B0417A /* InfoPlist.strings in Resources */,
 				764C174A1646E5EB00B0417A /* MainStoryboard_iPhone.storyboard in Resources */,
 				764C174D1646E5EB00B0417A /* MainStoryboard_iPad.storyboard in Resources */,
+				760185381655F0D3009DB911 /* legenda@2x.png in Resources */,
+				760185391655F0D3009DB911 /* legenda.png in Resources */,
+				76B27366165C2912005CC7D9 /* MemoryReferences.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,6 +667,7 @@
 				76ED2F0E16556B2C00621981 /* ResultTableViewController.m in Sources */,
 				76ED2F1216556B5C00621981 /* HeaderViewController.m in Sources */,
 				76ED2F1616556C1400621981 /* ResultCell.m in Sources */,
+				76169C9F165982230048ECE2 /* DejalActivityView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -769,6 +787,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PageReplacementSimulator/PageReplacementSimulator-Prefix.pch";
 				INFOPLIST_FILE = "PageReplacementSimulator/PageReplacementSimulator-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -785,6 +804,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PageReplacementSimulator/PageReplacementSimulator-Prefix.pch";
 				INFOPLIST_FILE = "PageReplacementSimulator/PageReplacementSimulator-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",

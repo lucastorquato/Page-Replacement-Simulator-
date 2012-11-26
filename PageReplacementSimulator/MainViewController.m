@@ -9,6 +9,7 @@
 #import "MainViewController.h"
 
 #import "GraphViewController.h"
+#import "DejalActivityView.h"
 
 @interface MainViewController ()
 
@@ -37,7 +38,12 @@
 	
     [self configureAllTextFields];
     
-    self.paginationReferencesTextField.text = @"7W 2W 7R 4W 4R 2R 6R 6R 5W 2W 7R 0R 5W 6W 4R 5R 1R 1W 5W";
+    NSString * fName = [[NSBundle mainBundle] pathForResource:@"MemoryReferences" ofType:@"txt"];
+    NSError *error = nil;
+    
+    self.paginationReferencesTextField.text = [NSString stringWithContentsOfFile:fName encoding:NSUTF8StringEncoding error:&error];
+    //self.paginationReferencesTextField.text = [NSString stringWithFormat:@"7W-2W-7R-4W-4R-2R-6R-6R-5W-2W-7R-0R-5W-6W-4R-5R-1R-1W-5W"];
+    
     self.firstIntervalFramesTextField.text = @"4";
     self.secondIntervalFramesTextField.text = @"10";
     self.intervalTimeBitRTextField.text = @"10";
@@ -62,8 +68,16 @@
 
 - (void)inputProblemWithActionsDelegete
 {
-    [self.delegate inputProblemWithActions:[self getMemoryActionsArrayWithBruteString:self.paginationReferencesTextField.text] intervalFrames:[self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text] andIntervalTimeBitR:[self.intervalTimeBitRTextField.text integerValue]];
-    
+    if ([self.paginationReferencesTextField.text rangeOfString:@".TXT"].location == NSNotFound) {
+        [self.delegate inputProblemWithActions:[self getMemoryActionsArrayWithBruteString:self.paginationReferencesTextField.text] intervalFrames:[self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text] andIntervalTimeBitR:[self.intervalTimeBitRTextField.text integerValue]];
+    }else{
+        NSData *textData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.wemob.dominiotemporario.com/%@",self.paginationReferencesTextField.text]]];
+        NSString *textString = [[NSString alloc] initWithData:textData encoding:NSASCIIStringEncoding];
+        
+        [self.delegate inputProblemWithActions:[self getMemoryActionsArrayWithBruteString:textString] intervalFrames:[self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text] andIntervalTimeBitR:[self.intervalTimeBitRTextField.text integerValue]];
+        
+    }
+
     [self dismissModalViewControllerAnimated:YES];
 }
 
@@ -73,8 +87,9 @@
 {
     if (self.paginationReferencesTextField.text.length > 0 && self.firstIntervalFramesTextField.text.length > 0 && self.secondIntervalFramesTextField.text.length > 0) {
         if ([self.firstIntervalFramesTextField.text integerValue] < [self.secondIntervalFramesTextField.text integerValue]) {
+            [DejalBezelActivityView activityViewForView:self.view withLabel:@"Transformando Dados..."];
             if (IS_IPAD) {
-                [self inputProblemWithActionsDelegete];
+                [self performSelector:@selector(inputProblemWithActionsDelegete) withObject:self afterDelay:0.5]; //[self inputProblemWithActionsDelegete];
             }else{
                 [self performSegueWithIdentifier:@"GraphSegue" sender:nil];
             }
@@ -88,6 +103,12 @@
     }
 }
 
+
+- (IBAction)deleteAllReferencesText:(id)sender
+{
+    [self.paginationReferencesTextField setText:@""];
+}
+
 #pragma mark - Segue
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -97,6 +118,7 @@
         graphViewController.actionsMemoryReference = [self getMemoryActionsArrayWithBruteString:self.paginationReferencesTextField.text];
         graphViewController.intervalFrames = [self getAllFrameIntervalsWithFirst:self.firstIntervalFramesTextField.text andSecondInterval:self.secondIntervalFramesTextField.text];
         graphViewController.intervalTimeBitR = [self.intervalTimeBitRTextField.text integerValue];
+        [DejalBezelActivityView removeViewAnimated:YES];
     }
 }
 
@@ -110,30 +132,23 @@
         [allFrameIntervals addObject:[NSString stringWithFormat:@"%d",i]];
     }
     
-    for (NSString *interval in allFrameIntervals) {
-        NSLog(@"%@",interval);
-    }
-    
     return [NSArray arrayWithArray:allFrameIntervals];
 }
 
 - (NSArray*)getMemoryActionsArrayWithBruteString:(NSString*)memoryActionsStr
 {
-    NSArray *subStrings = [memoryActionsStr componentsSeparatedByString:@" "];
-    for (int i = 0; i < [subStrings count]; i++) {
-        NSLog(@"string on array position %d is : %@", i, [subStrings objectAtIndex:i]);
-    }
+    NSArray *subStrings = [memoryActionsStr componentsSeparatedByString:@"-"];
     
     return subStrings;
 }
 
 - (void)configureAllTextFields
 {
-    [self.paginationReferencesTextField setDelegate:self];
+    //[self.paginationReferencesTextField setDelegate:self];
     [self.paginationReferencesTextField setReturnKeyType:UIReturnKeyDone];
-    [self.paginationReferencesTextField addTarget:self
-                                           action:@selector(dismissKeyboard:)
-                                 forControlEvents:UIControlEventEditingDidEndOnExit];
+    //[self.paginationReferencesTextField addTarget:self
+    //                                       action:@selector(dismissKeyboard:)
+    //                             forControlEvents:UIControlEventEditingDidEndOnExit];
     
     [self.firstIntervalFramesTextField setDelegate:self];
     [self.firstIntervalFramesTextField setReturnKeyType:UIReturnKeyDone];

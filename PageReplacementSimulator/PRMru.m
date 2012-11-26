@@ -59,21 +59,21 @@
             }
             
             // FINAL DA ITERACAO - LOAD PAGES E O BIT R
-            for (int i = 0 ; i < loadPages.count ; i++) {
-                NSLog(@">>>LISTA ENCADEADA (%d) %@ ",i, [loadPages objectAtIndex:i]);
-            }
-            NSLog(@"Number of hits: %d",hit);
+//            for (int i = 0 ; i < loadPages.count ; i++) {
+//                NSLog(@">>>LISTA ENCADEADA (%d) %@ ",i, [loadPages objectAtIndex:i]);
+//            }
+//            NSLog(@"Number of hits: %d",hit);
             
         }
         
         // Final Result
-        NSLog(@"Number of hits %d and fault %d",hit,fault);
-        for (int i = 0 ; i < loadPages.count ; i++) {
-            NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
-        }
-        for (int i = 0 ; i < framePage.count ; i++) {
-            NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
-        }
+//        NSLog(@"Number of hits %d and fault %d",hit,fault);
+//        for (int i = 0 ; i < loadPages.count ; i++) {
+//            NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
+//        }
+//        for (int i = 0 ; i < framePage.count ; i++) {
+//            NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
+//        }
         
         [self.allHits addObject:[NSString stringWithFormat:@"%d",hit]];
     }
@@ -90,12 +90,16 @@
 {
     NSMutableArray *newActionsMemory = [[NSMutableArray alloc] init];
     for (NSString *action in actionsMemory) {
-        [newActionsMemory addObject:[action substringToIndex:1]];
+        if (action.length == 2) {
+            [newActionsMemory addObject:[action substringToIndex:1]];
+        }else{
+            [newActionsMemory addObject:[action substringToIndex:2]];
+        }
     }
     
-    for (NSString *action in newActionsMemory) {
-        NSLog(@"%@",action);
-    }
+//    for (NSString *action in newActionsMemory) {
+//        NSLog(@"%@",action);
+//    }
     
     return [NSArray arrayWithArray:newActionsMemory];
 }

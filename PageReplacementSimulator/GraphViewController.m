@@ -19,6 +19,8 @@
 #import "ResultTableViewController.h"
 #import "MainViewController.h"
 
+#import "DejalActivityView.h"
+
 
 @interface GraphViewController ()
 
@@ -29,7 +31,7 @@
 #define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
 #define MAJOR_INCREMENT_Y 1
-#define MINOR_INCREMENT_Y 1
+#define MINOR_INCREMENT_Y 1 
 
 #pragma mark - Life Cycle
 
@@ -47,22 +49,16 @@
 {
     [super viewDidLoad];
     
-    
+    if (IS_IPAD) {
+        [self performSelector:@selector(showMainView) withObject:self afterDelay:0.5];
+    }else{
+        [self runAllPageRepacementAlgo];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    
-    if (IS_IPAD) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
-        MainViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"MainViewID"];
-        mainViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-        mainViewController.delegate = self;
-        [self.navigationController presentModalViewController:mainViewController animated:YES];
-    }else{
-        [self runAllPageRepacementAlgo];
-    }
 }
 
 - (void)viewDidUnload
@@ -73,39 +69,19 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
-}
-
-#pragma mark - Run Alg
-
-- (void)runAllPageRepacementAlgo
-{
-    self.fifo = [[PRFifo alloc] init];
-    self.fifo.actionsMemoryReference = self.actionsMemoryReference;
-    self.fifo.intervalFrames = self.intervalFrames;
-    [self.fifo run];
-    
-    self.secondChance = [[PRSecondChance alloc] init];
-    self.secondChance.actionsMemoryReference = self.actionsMemoryReference;
-    self.secondChance.intervalFrames = self.intervalFrames;
-    self.secondChance.intervalTimeBitR = self.intervalTimeBitR;
-    [self.secondChance run];
-    
-    self.mru = [[PRMru alloc] init];
-    self.mru.actionsMemoryReference = self.actionsMemoryReference;
-    self.mru.intervalFrames = self.intervalFrames;
-    [self.mru run];
-    
-    self.nur = [[PRNur alloc] init];
-    self.nur.actionsMemoryReference = self.actionsMemoryReference;
-    self.nur.intervalFrames = self.intervalFrames;
-    self.nur.intervalTimeBitR = self.intervalTimeBitR;
-    [self.nur run];
-    
-    [self initPlot];
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Main View Delegate
+
+- (void)showMainView
+{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
+    MainViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"MainViewID"];
+    mainViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+    mainViewController.delegate = self;
+    [self.navigationController presentModalViewController:mainViewController animated:YES];
+}
 
 - (void)inputProblemWithActions:(NSArray *)actionsMemory intervalFrames:(NSArray *)intervalFrames andIntervalTimeBitR:(NSInteger)intervalTimeR
 {
@@ -116,38 +92,48 @@
     [self runAllPageRepacementAlgo];
 }
 
+#pragma mark - Run Alg
+
+- (void)runAllPageRepacementAlgo
+{
+    [DejalBezelActivityView activityViewForView:self.view withLabel:@"Rodando os Algoritmos..."];
+    
+    //NSMutableArray *actionsMemoryReferenceClean = [[NSMutableArray alloc] initWithArray:[self removeWriteOrReadActionsOnActionsMemory:self.actionsMemoryReference]];
+    
+    self.fifo = [[PRFifo alloc] init];
+    self.fifo.actionsMemoryReference = self.actionsMemoryReference;//actionsMemoryReferenceClean;
+    self.fifo.intervalFrames = self.intervalFrames;
+    [self.fifo run];
+    
+    self.secondChance = [[PRSecondChance alloc] init];
+    self.secondChance.actionsMemoryReference = self.actionsMemoryReference;//actionsMemoryReferenceClean;
+    self.secondChance.intervalFrames = self.intervalFrames;
+    self.secondChance.intervalTimeBitR = self.intervalTimeBitR;
+    [self.secondChance run];
+    
+    self.mru = [[PRMru alloc] init];
+    self.mru.actionsMemoryReference = self.actionsMemoryReference; //actionsMemoryReferenceClean;
+    self.mru.intervalFrames = self.intervalFrames;
+    [self.mru run];
+    
+    self.nur = [[PRNur alloc] init];
+    self.nur.actionsMemoryReference = self.actionsMemoryReference;
+    self.nur.intervalFrames = self.intervalFrames;
+    self.nur.intervalTimeBitR = self.intervalTimeBitR;
+    [self.nur run];
+    
+    [DejalBezelActivityView removeViewAnimated:YES];
+    
+    [DejalBezelActivityView activityViewForView:self.view withLabel:@"Plotando os Dados..."];
+    
+    [self initPlot];
+}
+
 #pragma mark - Actions
 
 - (IBAction)didTouchDoneButton:(id)sender
 {
     [self dismissModalViewControllerAnimated:YES];
-}
-
-- (IBAction)didTouchTableButton:(id)sender
-{
-    if (IS_IPAD) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
-        ResultTableViewController *resultTableViewController = [storyboard instantiateViewControllerWithIdentifier:@"ResultTable"];
-        resultTableViewController.intervalFrames = self.intervalFrames;
-        resultTableViewController.fifo = self.fifo;
-        resultTableViewController.secondChance = self.secondChance;
-        resultTableViewController.mru = self.mru;
-        resultTableViewController.nur = self.nur;
-        
-        [self.navigationController presentModalViewController:resultTableViewController animated:YES];
-    }
-}
-
-- (IBAction)didTouchNewButton:(id)sender
-{
-    if (IS_IPAD) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
-        MainViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"MainViewID"];
-        mainViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-        mainViewController.delegate = self;
-        [self.navigationController presentModalViewController:mainViewController animated:YES];
-    
-    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -167,6 +153,23 @@
 
 }
 
+#pragma mark - Utils
+
+- (NSArray*)removeWriteOrReadActionsOnActionsMemory:(NSArray*)actionsMemory
+{
+    NSMutableArray *newActionsMemory = [[NSMutableArray alloc] init];
+    for (NSString *action in actionsMemory) {
+        if (action.length == 2) {
+            [newActionsMemory addObject:[action substringToIndex:1]];
+        }else{
+            [newActionsMemory addObject:[action substringToIndex:2]];
+        }
+    }
+    
+    return [NSArray arrayWithArray:newActionsMemory];
+}
+
+
 #pragma mark - UIViewController lifecycle methods
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -174,17 +177,13 @@
 }
 
 #pragma mark - Chart behavior
--(void)initPlot {
-    [self configureHost];
+-(void)initPlot
+{
     [self configureGraph];
     [self configurePlots];
     [self configureAxes];
-}
-
--(void)configureHost {
-	//self.hostView = [(CPTGraphHostingView *) [CPTGraphHostingView alloc] initWithFrame:self.view.bounds];
-	//self.hostView.allowPinchScaling = YES;
-	//[self.view addSubview:self.hostView];
+    
+    [DejalBezelActivityView removeViewAnimated:YES];
 }
 
 -(void)configureGraph {
@@ -221,7 +220,7 @@
 	fifoPlot.dataSource = self;
 	//aaplPlot.identifier = CPDTickerSymbolAAPL;
     fifoPlot.identifier = @"FIFO";
-	CPTColor *fifoColor = [CPTColor blueColor];
+	CPTColor *fifoColor = [CPTColor greenColor];
 	[graph addPlot:fifoPlot toPlotSpace:plotSpace];
 	CPTScatterPlot *secondChancePlot = [[CPTScatterPlot alloc] init];
 	secondChancePlot.dataSource = self;
@@ -252,7 +251,7 @@
 	
     // 4 - Create styles and symbols
 	CPTMutableLineStyle *fifoLineStyle = [fifoPlot.dataLineStyle mutableCopy];
-	fifoLineStyle.lineWidth = 3.0;
+	fifoLineStyle.lineWidth = 4.0;
 	fifoLineStyle.lineColor = fifoColor;
 	fifoPlot.dataLineStyle = fifoLineStyle;
 	CPTMutableLineStyle *fifoSymbolLineStyle = [CPTMutableLineStyle lineStyle];
@@ -263,7 +262,7 @@
 	fifoSymbol.size = CGSizeMake(6.0f, 6.0f);
 	fifoPlot.plotSymbol = fifoSymbol;
 	CPTMutableLineStyle *secondChanceLineStyle = [secondChancePlot.dataLineStyle mutableCopy];
-	secondChanceLineStyle.lineWidth = 3.0;
+	secondChanceLineStyle.lineWidth = 4.0;
 	secondChanceLineStyle.lineColor = secondChanceColor;
 	secondChancePlot.dataLineStyle = secondChanceLineStyle;
 	CPTMutableLineStyle *secondChanceSymbolLineStyle = [CPTMutableLineStyle lineStyle];
@@ -274,7 +273,7 @@
 	secondChanceSymbol.size = CGSizeMake(6.0f, 6.0f);
 	secondChancePlot.plotSymbol = secondChanceSymbol;
 	CPTMutableLineStyle *msftLineStyle = [msftPlot.dataLineStyle mutableCopy];
-	msftLineStyle.lineWidth = 3.0;
+	msftLineStyle.lineWidth = 4.0;
 	msftLineStyle.lineColor = msftColor;
 	msftPlot.dataLineStyle = msftLineStyle;
 	CPTMutableLineStyle *msftSymbolLineStyle = [CPTMutableLineStyle lineStyle];
@@ -285,7 +284,7 @@
 	msftSymbol.size = CGSizeMake(6.0f, 6.0f);
 	msftPlot.plotSymbol = msftSymbol;
     CPTMutableLineStyle *nurLineStyle = [nurPlot.dataLineStyle mutableCopy];
-	nurLineStyle.lineWidth = 3.0;
+	nurLineStyle.lineWidth = 4.0;
 	nurLineStyle.lineColor = nurColor;
     nurLineStyle.lineJoin =  kCGLineCapRound;
     nurLineStyle.lineCap = kCGLineCapButt;
@@ -331,13 +330,12 @@
 	x.majorTickLineStyle = axisLineStyle;
 	x.majorTickLength = 4.0f;
 	x.tickDirection = CPTSignNegative;
-	//CGFloat dateCount = [[[CPDStockPriceStore sharedInstance] datesInMonth] count];    //***** FRAME INTERVALS -  Y AXIS
-	CGFloat dateCount = self.fifo.intervalFrames.count;
+	CGFloat dateCount = self.intervalFrames.count;
     NSMutableSet *xLabels = [NSMutableSet setWithCapacity:dateCount];
 	NSMutableSet *xLocations = [NSMutableSet setWithCapacity:dateCount];
 	NSInteger i = 0;
-	//for (NSString *date in [[CPDStockPriceStore sharedInstance] datesInMonth]) {
-    for (NSString *date in self.fifo.intervalFrames) {
+
+    for (NSString *date in self.intervalFrames) {
 		CPTAxisLabel *label = [[CPTAxisLabel alloc] initWithText:date  textStyle:x.labelTextStyle];
 		CGFloat location = i++;
 		label.tickLocation = CPTDecimalFromCGFloat(location);
@@ -363,11 +361,8 @@
 	y.majorTickLength = 4.0f;
 	y.minorTickLength = 2.0f;
 	y.tickDirection = CPTSignPositive;
-//	NSInteger majorIncrement = 100;
-//	NSInteger minorIncrement = 50;
-    NSInteger majorIncrement = MAJOR_INCREMENT_Y;
-	NSInteger minorIncrement = MINOR_INCREMENT_Y;
-	//CGFloat yMax = 700.0f;  // should determine dynamically based on max price //*** MAX HEIGHT VALUE!!!!!!!!!
+    NSInteger majorIncrement = [self getMaxHitValueWithAllPGAlgorithms];
+	NSInteger minorIncrement = [self getMinHitValueWithAllPGAlgorithms];
 	CGFloat yMax = [self getMaxHitValueWithAllPGAlgorithms];
     NSMutableSet *yLabels = [NSMutableSet set];
 	NSMutableSet *yMajorLocations = [NSMutableSet set];
@@ -390,17 +385,27 @@
 	y.axisLabels = yLabels;
 	y.majorTickLocations = yMajorLocations;
 	y.minorTickLocations = yMinorLocations;
+    
+//    for (NSDecimalNumber *number in yMajorLocations) {
+//        NSLog(@"MAJOR: %@",number);
+//    }
+//    
+//    for (NSDecimalNumber *number in yMinorLocations) {
+//        NSLog(@"MINOR: %@",number);
+//    }
 }
 
 
 #pragma mark - CPTPlotDataSource methods
--(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
-	//return [[[CPDStockPriceStore sharedInstance] datesInMonth] count];    //*** NUMBER OF FRAME INTERVALS
+
+- (NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
+{
     return self.intervalFrames.count;
 }
 
--(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
-	//NSInteger valueCount = [[[CPDStockPriceStore sharedInstance] datesInMonth] count];
+- (NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index
+{
+	
 	NSInteger valueCount = self.intervalFrames.count;
     
     switch (fieldEnum) {
@@ -448,6 +453,17 @@
     [allHitsList addObject:[self.nur.allHits valueForKeyPath:@"@max.intValue"]];
     
     return [[allHitsList valueForKeyPath:@"@max.intValue"] intValue];
+}
+
+- (NSUInteger)getMinHitValueWithAllPGAlgorithms
+{
+    NSMutableArray *allHitsList = [[NSMutableArray alloc] init];
+    [allHitsList addObject:[self.fifo.allHits valueForKeyPath:@"@min.intValue"]];
+    [allHitsList addObject:[self.secondChance.allHits valueForKeyPath:@"@min.intValue"]];
+    [allHitsList addObject:[self.mru.allHits valueForKeyPath:@"@min.intValue"]];
+    [allHitsList addObject:[self.nur.allHits valueForKeyPath:@"@min.intValue"]];
+    
+    return [[allHitsList valueForKeyPath:@"@min.intValue"] intValue];
 }
 
 @end

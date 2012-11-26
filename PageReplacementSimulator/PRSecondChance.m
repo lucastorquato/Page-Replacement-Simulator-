@@ -39,8 +39,8 @@
             
             // COLOCAR TODOS OS BIT R EM ZERO QUANDO O NUMERO DE ACOES CHEGAR
             NSMutableArray *bitRListCopy = [[NSMutableArray alloc] initWithArray:bitRList];
-            if (self.intervalTimeBitR == i) {
-                NSLog(@"%d - %d",self.intervalTimeBitR, i);
+            if (i%self.intervalTimeBitR == 0) { //self.intervalTimeBitR == i
+                //NSLog(@"%d - %d",self.intervalTimeBitR, i);
                 for (int x = 0; x < bitRListCopy.count; x++) {
                     [bitRList replaceObjectAtIndex:x withObject:[NSNumber numberWithInt:0]];
                 }
@@ -52,7 +52,7 @@
             if ([loadPages containsObject:actionMemory]) {              // SE NO FRAME EXISTE A PAGINA, INCREMENTE HIT E INCREMENTE O BIT R SE  R == 0
                 hit++;
                 if ([[bitRList objectAtIndex:[loadPages indexOfObject:actionMemory]]integerValue] == 0) {
-                    NSLog(@"Action:%@ - Idx_Load:%d - BitR:%d", actionMemory ,[loadPages indexOfObject:actionMemory] ,[[bitRList objectAtIndex:[loadPages indexOfObject:actionMemory]] integerValue]);
+                    //NSLog(@"Action:%@ - Idx_Load:%d - BitR:%d", actionMemory ,[loadPages indexOfObject:actionMemory] ,[[bitRList objectAtIndex:[loadPages indexOfObject:actionMemory]] integerValue]);
                     [bitRList replaceObjectAtIndex:[loadPages indexOfObject:actionMemory] withObject:[NSNumber numberWithInt:1]];
                 }
                 
@@ -99,21 +99,21 @@
             }
             
             // FINAL DA ITERACAO - LOAD PAGES E O BIT R
-            for (int i = 0 ; i < loadPages.count ; i++) {
-                NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d ",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue]);
-            }
-            NSLog(@"Number of hits: %d",hit);
+//            for (int i = 0 ; i < loadPages.count ; i++) {
+//                NSLog(@">>>LISTA ENCADEADA (%d) %@ R=%d ",i, [loadPages objectAtIndex:i],[[bitRList objectAtIndex:i]integerValue]);
+//            }
+//            NSLog(@"Number of hits: %d",hit);
         
         }
         
         // Final Result
-        NSLog(@"Number of hits %d and fault %d",hit,fault);
-        for (int i = 0 ; i < loadPages.count ; i++) {
-            NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
-        }
-        for (int i = 0 ; i < framePage.count ; i++) {
-            NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
-        }
+//        NSLog(@"Number of hits %d and fault %d",hit,fault);
+//        for (int i = 0 ; i < loadPages.count ; i++) {
+//            NSLog(@">>> (%d) %@ ",i, [loadPages objectAtIndex:i]);
+//        }
+//        for (int i = 0 ; i < framePage.count ; i++) {
+//            NSLog(@">>>FRAME SNAPSHOT (%d) %@ ",i, [framePage objectAtIndex:i]);
+//        }
         
         [self.allHits addObject:[NSString stringWithFormat:@"%d",hit]];
     }
@@ -130,12 +130,16 @@
 {
     NSMutableArray *newActionsMemory = [[NSMutableArray alloc] init];
     for (NSString *action in actionsMemory) {
-        [newActionsMemory addObject:[action substringToIndex:1]];
+        if (action.length == 2) {
+            [newActionsMemory addObject:[action substringToIndex:1]];
+        }else{
+            [newActionsMemory addObject:[action substringToIndex:2]];
+        }
     }
     
-    for (NSString *action in newActionsMemory) {
-        NSLog(@"%@",action);
-    }
+//    for (NSString *action in newActionsMemory) {
+//        NSLog(@"%@",action);
+//    }
     
     return [NSArray arrayWithArray:newActionsMemory];
 }
